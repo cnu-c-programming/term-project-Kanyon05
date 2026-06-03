@@ -39,3 +39,53 @@ void add_student(Student** head, int id, const char* name, int score) {
         current->next = new_student;
     }
 }
+
+void delete_student(Student** head, int id) {
+    Student* current = *head;
+    Student* prev = NULL;
+
+    while (current!=NULL && current->id != id) {
+        prev = current;
+        current = current->next;
+    }
+
+    if (current == NULL) {
+        printf("Error: student not found.\n");
+        return;
+    }
+
+    if (prev == NULL) {
+        *head = current->next;
+    } else {
+        prev->next = current->next;
+    }
+
+    free(current);
+    printf("Studnet deleted. \n");
+}
+
+void update_student(Student* head, int id, int score) {
+    Student* target = find_student(head, id); 
+    
+    if (target == NULL) {
+        printf("Error: student not found.\n");
+        return;
+    }
+    
+    target->score = score;
+    printf("Student updated.\n");
+}
+
+void list_students(Student* head) {
+    if (head == NULL) {
+        printf("No students found.\n");
+        return;
+    }
+    
+    printf("ID\tName\tScore\n");
+    Student* current = head;
+    while (current != NULL) {
+        printf("%d\t%s\t%d\n", current->id, current->name, current->score);
+        current = current->next;
+    }
+}
