@@ -89,3 +89,44 @@ void list_students(Student* head) {
         current = current->next;
     }
 }
+
+//print_stats, free_all_students 채우기
+
+void print_stats(Student* head) {
+    if (head == NULL) {
+        printf("No student data available.\n");
+        return;
+    }
+
+    int count = 0;
+    int sum = 0;
+    int max = -1;
+    int min = 101;
+    
+    Student* current = head;
+    while (current != NULL) {
+        count++;
+        sum += current->score;
+        if (current->score > max) max = current->score;
+        if (current->score < min) min = current->score;
+        current = current->next;
+    }
+
+    printf("Count: %d\n", count);
+    printf("Average: %.1f\n", (float)sum/count);
+    printf("Max: %d\n", max);
+    printf("Min: %d\n", min);
+}
+
+void free_all_students(Student** head) {
+    Student* current = *head;
+    Student* next_node = NULL;
+
+    while(current != NULL) {
+        next_node = current->next;
+        free(current);
+        current = next_node;
+    }
+
+    *head = NULL;
+}
