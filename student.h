@@ -4,6 +4,7 @@
 typedef struct Student {
     int id;
     char name[32];
+    int score;
     struct Student* next;
 } Student;
 
@@ -18,3 +19,4 @@ void print_stats(Student* head);
 void free_all_students(Student** head);
 
 #endif
+

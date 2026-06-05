@@ -90,8 +90,6 @@ void list_students(Student* head) {
     }
 }
 
-//print_stats, free_all_students 채우기
-
 void print_stats(Student* head) {
     if (head == NULL) {
         printf("No student data available.\n");
