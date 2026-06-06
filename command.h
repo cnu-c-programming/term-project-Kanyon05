@@ -14,7 +14,7 @@ typedef enum {
     SHELL_ERR_STUDENT_NOT_FOUND,
     SHELL_ERR_DUPLICATE_STUDENT,
     SHELL_ERR_INVALID_SCORE
-} SehllResult;
+} ShellResult;
 
 typedef ShellResult (*CommandHandler)(char* args, Student** head);
 
