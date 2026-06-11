@@ -12,7 +12,7 @@ int load_students_from_csv(const char* filename, Student** head) {
     int count = 0;
 
     if (fgets(line, sizeof(line), file) != NULL) {
-        if(strstr(line, "id") == NULL || strstr(line, "nmae") == NULL || strstr(line, "score")==NULL) {
+        if(strstr(line, "id") == NULL || strstr(line, "name") == NULL || strstr(line, "score")==NULL) {
             printf("Error: Invalid CSV header.\n");
             fclose(file);
             return -1;
@@ -56,13 +56,13 @@ int save_students_to_csv(const char* filename, Student* head) {
         return -1;
     }
 
-    fprintf(file, "id, name, score\n");
+    fprintf(file, "id,name,score\n");
 
     int count = 0;
     Student* current = head;
 
     while (current != NULL) {
-        fprintf(file, "%d, %s, %d\n", current->id, current->name, current->score);
+        fprintf(file, "%d,%s,%d\n", current->id, current->name, current->score);
         current = current->next;
         count++; 
     }

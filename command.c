@@ -12,6 +12,18 @@ void set_csv_path(const char* path) {
     }
 }
 
+int is_valid_number(const char* str) {
+    if (str == NULL || *str == '\0') return 0;
+    int i = 0;
+    if (str[0] == '-') i = 1;
+    if (str[i] == '\0') return 0;
+    while (str[i] != '\0') {
+        if (str[i] < '0' || str[i] > '9') return 0;
+        i++;
+    }
+    return 1;
+}
+
 ShellResult handle_help(char* args, Student** head);
 
 ShellResult handle_exit(char* args, Student** head) {
@@ -47,10 +59,11 @@ ShellResult handle_find(char* args, Student** head) {
     Student* student = find_student(*head, id);
     if (student != NULL) {
         printf("ID: %d\nName: %s\nScore: %d\n", student->id, student->name, student->score);
+        return SHELL_OK;
     } else {
         printf("Error: student not found.\n");
+        return SHELL_ERR_STUDENT_NOT_FOUND;
     }
-    return SHELL_OK;
 }
 
 ShellResult handle_reload(char* args, Student** head) {
@@ -87,6 +100,21 @@ ShellResult handle_add(char* args, Student** head){
         return SHELL_ERR_MISSING_ARGUMENT;
     }
 
+    if (id_str == NULL || name_str == NULL || score_str == NULL) {
+        printf("Error: missing arguments.\n");
+        return SHELL_ERR_MISSING_ARGUMENT;
+    }
+
+    if (!is_valid_number(id_str) || atoi(id_str) <= 0) {
+        printf("Error: invalid argument.\n");
+        return SHELL_ERR_INVALID_ARGUMENT;
+    }
+
+    if (!is_valid_number(score_str) || atoi(score_str) < 0 || atoi(score_str) > 100) {
+        printf("Error: invalid score.\n");
+        return SHELL_ERR_INVALID_SCORE;
+    }
+    
     int id = atoi(id_str);
     int score = atoi(score_str);
 
@@ -110,6 +138,10 @@ ShellResult handle_delete(char* args, Student** head) {
         return SHELL_ERR_MISSING_ARGUMENT;
     }
     int id = atoi(args);
+    if (find_student(*head, id) == NULL) {
+        printf("Error: student not found.\n");
+        return SHELL_ERR_STUDENT_NOT_FOUND;
+    }
     delete_student(head, id);
     return SHELL_OK;
 }
@@ -127,6 +159,16 @@ ShellResult handle_update(char* args, Student** head){
         return SHELL_ERR_MISSING_ARGUMENT;
     }
 
+    if (!is_valid_number(id_str) || atoi(id_str) <= 0) {
+        printf("Error: invalid argument.\n");
+        return SHELL_ERR_INVALID_ARGUMENT;
+    }
+
+    if (!is_valid_number(score_str) || atoi(score_str) < 0 || atoi(score_str) > 100) {
+        printf("Error: invalid score.\n");
+        return SHELL_ERR_INVALID_SCORE;
+    }
+
     int id = atoi(id_str);
     int score = atoi(score_str);
 
@@ -135,6 +177,10 @@ ShellResult handle_update(char* args, Student** head){
         return SHELL_ERR_INVALID_SCORE;
     }
 
+    if (find_student(*head, id) == NULL) {
+        printf("Error: student not found.\n");
+        return SHELL_ERR_STUDENT_NOT_FOUND; 
+    }
     update_student(*head, id, score);
     return SHELL_OK;
 }
@@ -142,7 +188,7 @@ ShellResult handle_update(char* args, Student** head){
 #ifdef ADMIN_MODE
 
 Command commands[] = {
-    {"svae", handle_save, "save", "Save students to CSV"},
+    {"save", handle_save, "save", "Save students to CSV"},
     {"reload", handle_reload, "reload", "Reload students from CSV"},
     {"add", handle_add, "add <id> <name> <score>", "Add a student"},
     {"delete", handle_delete, "delete <id>", "Delete a student"},
@@ -158,13 +204,13 @@ Command commands[] = {
 #elif defined(CLIENT_MODE)
 
 Command commands[] = {
-    {"reload", handle_reload, "reload", "Reload students from CSV"}, [cite: 302, 309]
-    {"find", handle_find, "find <id>", "Find student"}, [cite: 310, 311, 312, 313]
-    {"list", handle_list, "list", "List students"}, [cite: 314, 315, 316, 317]
-    {"stats", handle_stats, "stats", "Show statistics"}, [cite: 318, 319, 320]
-    {"help", handle_help, "help", "Show help"}, [cite: 321, 322, 323, 324]
-    {"clear", handle_clear, "clear", "Clear screen"}, [cite: 326, 327]
-    {"exit", handle_exit, "exit", "Exit shell"} [cite: 326, 328]
+    {"reload", handle_reload, "reload", "Reload students from CSV"},
+    {"find", handle_find, "find <id>", "Find student"},
+    {"list", handle_list, "list", "List students"},
+    {"stats", handle_stats, "stats", "Show statistics"},
+    {"help", handle_help, "help", "Show help"},
+    {"clear", handle_clear, "clear", "Clear screen"},
+    {"exit", handle_exit, "exit", "Exit shell"}
 };
 
 #endif
@@ -173,7 +219,7 @@ Command commands[] = {
 
 ShellResult handle_help(char* args, Student** head) {
     (void)args; (void)head;
-    printf("Commnads:\n");
+    printf("Commands:\n");
     for (size_t i = 0; i < NUM_COMMANDS; i++) {
         printf("  %-25s %s\n", commands[i].usage, commands[i].description);
     }

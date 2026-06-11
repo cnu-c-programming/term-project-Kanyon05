@@ -61,7 +61,7 @@ void delete_student(Student** head, int id) {
     }
 
     free(current);
-    printf("Studnet deleted. \n");
+    printf("Student deleted.\n");
 }
 
 void update_student(Student* head, int id, int score) {
