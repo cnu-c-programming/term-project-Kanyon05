@@ -73,8 +73,6 @@ void run_command_file(const char *cmd_file, const char *csv_path) {
     int line_num = 0;
 
     while (fgets(line, sizeof(line), file) != NULL) {
-        line_num++;
-
         char original_line[256];
         strncpy(original_line, line, sizeof(original_line));
         original_line[strcspn(original_line, "\r\n")] = '\0';
@@ -83,6 +81,8 @@ void run_command_file(const char *cmd_file, const char *csv_path) {
         while (*trimmed == ' ' || *trimmed == '\t') trimmed++;
         if (strlen(trimmed) == 0 || *trimmed == '\n' || *trimmed == '\r') continue;
         if (*trimmed == '#') continue;
+
+        line_num++;
 
         printf("[command file:%d] %s\n", line_num, original_line);
 

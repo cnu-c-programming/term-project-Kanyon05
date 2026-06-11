@@ -5,6 +5,7 @@
 #include "file_io.h"
 
 static const char* g_csv_path = "students.csv";
+static int g_unsaved_changes = 0;
 
 void set_csv_path(const char* path) {
     if (path != NULL) {
@@ -28,6 +29,11 @@ ShellResult handle_help(char* args, Student** head);
 
 ShellResult handle_exit(char* args, Student** head) {
     (void) args; (void) head;
+
+    if (g_unsaved_changes) {
+        printf("Warning: You have unsaved changes. (Use 'save' to save them)\n");
+    }
+
     printf("Goodbye.\n");
     return SHELL_EXIT;
 }
@@ -73,6 +79,7 @@ ShellResult handle_reload(char* args, Student** head) {
     if (count >= 0) {
         printf("Reloaded %d students from %s.\n", count, g_csv_path);
     }
+    g_unsaved_changes = 0;
     return SHELL_OK;
 }
 
@@ -82,6 +89,7 @@ ShellResult handle_save(char* args, Student** head) {
     if (count >= 0) {
         printf("Saved %d students to %s.\n", count, g_csv_path);
     }
+    g_unsaved_changes = 0;
     return SHELL_OK;
 }
 
@@ -129,6 +137,7 @@ ShellResult handle_add(char* args, Student** head){
 
     add_student(head, id, name_str, score);
     printf("Student added.\n");
+    g_unsaved_changes = 1;
     return SHELL_OK;
 }
 
@@ -143,6 +152,7 @@ ShellResult handle_delete(char* args, Student** head) {
         return SHELL_ERR_STUDENT_NOT_FOUND;
     }
     delete_student(head, id);
+    g_unsaved_changes = 1;
     return SHELL_OK;
 }
 
@@ -182,6 +192,32 @@ ShellResult handle_update(char* args, Student** head){
         return SHELL_ERR_STUDENT_NOT_FOUND; 
     }
     update_student(*head, id, score);
+    g_unsaved_changes = 1;
+    return SHELL_OK;
+}
+
+ShellResult handle_sort(char* args, Student** head) {
+    if (args == NULL) {
+        printf("Error: missing arguments.\n");
+        return SHELL_ERR_MISSING_ARGUMENT;
+    }
+
+    char* key = strtok(args, " \t");
+    if (key == NULL) {
+        printf("Error: missing sort key.\n");
+        return SHELL_ERR_MISSING_ARGUMENT;
+    }
+
+    if (strcmp(key, "name") == 0) {
+        sort_students(head, "name");
+        printf("List sorted by name.\n");
+    } else if (strcmp(key, "score") == 0) {
+        sort_students(head, "score");
+        printf("List sorted by score.\n");
+    } else {
+        printf("Error: invalid sort key.\n");
+    }
+    g_unsaved_changes = 1;
     return SHELL_OK;
 }
 
@@ -198,6 +234,7 @@ Command commands[] = {
     {"stats", handle_stats, "stats", "Show statistics"},
     {"help", handle_help, "help", "Show help"},
     {"clear", handle_clear, "clear", "Clear screen"},
+    {"sort", handle_sort, "sort <name|score>", "Sort students"},
     {"exit", handle_exit, "exit", "Exit shell"}
 };
 

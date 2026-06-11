@@ -128,3 +128,44 @@ void free_all_students(Student** head) {
 
     *head = NULL;
 }
+
+void sort_students(Student** head, const char* key) {
+    if (*head == NULL || (*head)->next == NULL) return;
+
+    int swapped;
+    Student *ptr1;
+    Student *lptr = NULL;
+
+    do {
+        swapped = 0;
+        ptr1 = *head;
+
+        while (ptr1->next != lptr) {
+            int cmp = 0;
+            if (strcmp(key, "name") == 0) {
+                cmp = strcmp(ptr1->name, ptr1->next->name);
+            } else if (strcmp(key, "score") == 0) {
+                cmp = ptr1->score > ptr1->next->score;
+            }
+
+            if (cmp > 0) {
+                int temp_id = ptr1->id;
+                int temp_score = ptr1->score;
+                char temp_name[32];
+                strcpy(temp_name, ptr1->name);
+
+                ptr1->id = ptr1->next->id;
+                ptr1->score = ptr1->next->score;
+                strcpy(ptr1->name, ptr1->next->name);
+
+                ptr1->next->id = temp_id;
+                ptr1->next->score = temp_score;
+                strcpy(ptr1->next->name, temp_name);
+
+                swapped = 1;
+            }
+            ptr1 = ptr1->next;
+        }
+        lptr=ptr1;
+    } while (swapped);
+}

@@ -14,6 +14,7 @@ void update_student (Student* head, int id, int score);
 Student* find_student(Student* head, int id);
 
 void list_students(Student* head);
+void sort_students(Student** head, const char* key);
 void print_stats(Student* head);
 
 void free_all_students(Student** head);
