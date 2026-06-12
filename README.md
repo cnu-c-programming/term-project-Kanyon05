@@ -23,7 +23,8 @@ make clean    # 빌드 파일 삭제
 ```
 
 - CSV 파일이 없으면 빈 목록으로 시작합니다.
-- `-f` 명령어 파일 처리 후 `exit` 없이 끝나면 인터랙티브 셸을 계속 실행합니다.
+- `-f` 옵션으로 전달한 명령어 파일을 열 수 없는 경우, 오류 메시지를 출력한 뒤 인터랙티브 셸로 진입합니다.
+- `-f` 명령어 파일 처리 후 `exit` 없이 끝나면 프로그램이 종료되지 않고 인터랙티브 셸을 계속 실행합니다.
 
 ## 명령어
 
@@ -39,6 +40,8 @@ make clean    # 빌드 파일 삭제
 | `add <id> <name> <score>` | O | X | 학생 추가 |
 | `delete <id>` | O | X | 학생 삭제 |
 | `update <id> <score>` | O | X | 점수 수정 |
+| `stats` | O | O | 학생 수, 평균, 최고/최저점 통계 출력 |
+| `clear` | O | O | 터미널 화면 지우기 |
 
 ## CSV 형식
 
@@ -74,10 +77,13 @@ exit
 
 ```
 student/
-├── main.c       - 프로그램 진입점 (구현 필요)
-├── Makefile     - 빌드 자동화
+├── main.c       - 프로그램 진입점 및 셸 루프 구현
+├── student.h/.c - Student 구조체 및 Linked List 제어 (add, delete 등)
+├── command.h/.c - 명령어 파싱 및 실행 핸들러 (Admin/Client 분기)
+├── file_io.h/.c - CSV 파일 입출력 (load, save) 로직
+├── Makefile     - 빌드 자동화 스크립트
+├── students.csv - 학생 데이터 저장 파일 (기본값)
 ├── grader.py    - 제출 전 기능 확인용 채점 스크립트
-├── grader.md    - grader 사용법
 └── expected/    - 채점 기준 CSV 파일 모음
 ```
 
