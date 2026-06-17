@@ -1,0 +1,23 @@
+# 학생 목록 먼저 확인
+list
+
+# 새로운 학생 추가
+add 4 David 88
+add 5 Eve 75
+
+# 잘못된 입력 테스트 (건너뛰기 되는지 확인)
+add 6 FailStudent 150
+
+# 빈 줄 테스트 (위아래 빈 줄은 무시되어야 함)
+
+# 이름순으로 정렬 (보너스 기능)
+sort name
+list
+
+# 점수 수정 및 검색
+update 2 98
+find 4
+
+# 최종 저장 후 종료
+save
+exit
